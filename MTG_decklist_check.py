@@ -1,7 +1,7 @@
 #Thomas Demianovich
 #Python Final Project
 #Magic the Gathering Price checker
-import pyppeteer
+from pyppeteer import launch 
 import asyncio
 
 def main():
@@ -20,11 +20,11 @@ def main():
     url+= urlEnd
     print(url)
     asyncio.get_event_loop().run_until_complete(async_main(url))
-main()
+
 
 
 async def async_main(url): # <--- Define function
-    browser = await launch(headless = True, executablePath = '/usr/bin/chromium-browser')
+    browser = await launch(headless = True)
     page = await browser.newPage()
 
     await page.goto(url, timeout = 0)
@@ -35,6 +35,6 @@ async def async_main(url): # <--- Define function
 
     await browser.close()
 
-
+main()
 #Test url with Karador, Ghost Cheiftain
 #https://www.scrapingbee.com/blog/pyppeteer/
