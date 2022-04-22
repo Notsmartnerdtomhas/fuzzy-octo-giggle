@@ -30,6 +30,33 @@ def setUp(url):
     browser = webdriver.Firefox(executable_path = 'C:/Users/demia/Downloads/geckodriver-v0.31.0-win64/geckodriver')
 
     browser.get(url)
+    #a = browser.find_element(By.CLASS_NAME, 'search-results')
+    a = browser.find_elements_by_css_selector('span.search-result__subtitle')
+    #print(a.find_element_by_xpath(".//*").get_attribute('innerHTML'))
+    print(a)
+    number = 0
+    for subtitle in a:
+        magic_set = subtitle.get_attribute('innerHTML')
+        number +=1
+        print(number, magic_set)
+
+    
+    b = browser.find_elements_by_css_selector('span.search-result__market-price--value')
+    for price in b:
+        card_price = price.get_attribute('innerHTML')
+        #print(card_price)
+        
+    card_set = int(input('Enter card set from listed options/ associated number'))
+    print(b[card_set-1].get_attribute('innerHTML'))
+    
+    browser.quit()
+
+
+
+
+
+    
+"""
     a = browser.find_element(By.CLASS_NAME, 'search-result__subtitle')
     #'search-result__subtitle')
     #print(a)
@@ -37,6 +64,7 @@ def setUp(url):
     parent2 = parent.find_element_by_xpath('..')
     print(a.get_attribute('innerHTML')) #<-- only outputs one set
     print(parent2.get_attribute('href'))
+
     second_url = parent2.get_attribute('href') #<-- url for specific set from above
 
     browser.get(second_url)
@@ -48,22 +76,10 @@ def setUp(url):
     market_value = b.find_element(By.XPATH, value = "//li[1]//span[2]")
     print(market_value.get_attribute('innerHTML'))
     
+"""    
     
-    
-    browser.quit()
-"""
-async def async_main(url): # <--- Define function
-    browser = await launch(headless = True)
-    page = await browser.newPage()
+    #browser.quit()
 
-    await page.goto(url, timeout = 0)
-
-    page_content = await page.content()
-
-    print(page_content)
-
-    await browser.close()
-"""
 main()
 #Test url with Karador, Ghost Chieftain
 #https://www.scrapingbee.com/blog/pyppeteer/
