@@ -2,18 +2,23 @@
 #Python Final Project
 #Magic the Gathering Price checker
 
-#from pyppeteer import launch 
-#import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import csv
+import time
+
+browser = webdriver.Firefox(executable_path = 'C:/Users/demia/Downloads/geckodriver-v0.31.0-win64/geckodriver')
+
+
 
 def main():
-    cardName = 'Karador, Ghost Chieftain' #input("What is the magic Card?")
+    Sum_cost = 0
+    cardName = input("What is the magic Card?")
 
     #cardSet = input("What is the magic Card set?")
     #foil = input("Foil?")
-    urlFront = "https://www.tcgplayer.com/search/all/product?q="
+    urlFront = "https://www.tcgplayer.com/search/magic/product?q="
     urlEnd = "&view=grid"
     url = urlFront
     cardNameSplit = cardName.split()
@@ -23,17 +28,57 @@ def main():
             url += "%20"
     url+= urlEnd
     #print(url)
-    setUp(url) #<--- cap sensitive
-    #asyncio.get_event_loop().run_until_complete(async_main(url))
+    
+    info = setUp(url) #<--- cap sensitive
+
+    file = open(cardNameSplit[0].replace(",","")+".csv",'w',newline = "")
+    row = ['Card Name', 'Set', 'Market Price']
+    writer = csv.writer(file)
+    writer.writerow(row)
+    writer.writerow([cardName,info[0],info[1]])
+    Sum_cost+= float(info[1].replace("$",""))
+    #print(Sum_cost)
+    
+    while True:
+        NextCard = input("What is the magic Card or enter 'quit' to stop?")
+        if NextCard == 'quit':
+            break
+        url = urlFront
+        NextCardSplit = NextCard.split()
+        for section in NextCardSplit:
+            url += section
+            if section != NextCardSplit[-1]:
+                url += "%20"
+        url+= urlEnd
+        
+        time.sleep(1/10) #<-- 1/10 of a second delay
+        #print(url)
+        info = setUp(url) #<--- cap sensitive
+
+        file = open(cardNameSplit[0].replace(",","")+".csv",'a',newline = "")
+        writer = csv.writer(file)
+        writer.writerow([NextCard,info[0],info[1]])
+        Sum_cost+= float(info[1].replace("$",""))
+    print('Total Cost',"$"+str(Sum_cost))
+    writer.writerow([None])
+    writer.writerow(['Total',None,"$"+str(Sum_cost)])
+
+
+
+    browser.quit()
+    
 
 def setUp(url):
-    browser = webdriver.Firefox(executable_path = 'C:/Users/demia/Downloads/geckodriver-v0.31.0-win64/geckodriver')
-
+    
+    #time.sleep(1/10) #<-- 1/10 of a second delay
+    #print(url)
     browser.get(url)
+    time.sleep(2)
     #a = browser.find_element(By.CLASS_NAME, 'search-results')
     a = browser.find_elements_by_css_selector('span.search-result__subtitle')
     #print(a.find_element_by_xpath(".//*").get_attribute('innerHTML'))
-    print(a)
+    #print(a)
+
     number = 0
     for subtitle in a:
         magic_set = subtitle.get_attribute('innerHTML')
@@ -49,37 +94,10 @@ def setUp(url):
     card_set = int(input('Enter card set from listed options/ associated number'))
     print(b[card_set-1].get_attribute('innerHTML'))
     
-    browser.quit()
-
-
-
-
-
     
-"""
-    a = browser.find_element(By.CLASS_NAME, 'search-result__subtitle')
-    #'search-result__subtitle')
-    #print(a)
-    parent = a.find_element_by_xpath('..')
-    parent2 = parent.find_element_by_xpath('..')
-    print(a.get_attribute('innerHTML')) #<-- only outputs one set
-    print(parent2.get_attribute('href'))
-
-    second_url = parent2.get_attribute('href') #<-- url for specific set from above
-
-    browser.get(second_url)
-    browser.implicitly_wait(3)      
-
-    b = browser.find_element(By.CLASS_NAME, 'price-points__rows')
-    #'price-points__rows'
-    #print(b)
-    market_value = b.find_element(By.XPATH, value = "//li[1]//span[2]")
-    print(market_value.get_attribute('innerHTML'))
-    
-"""    
-    
-    #browser.quit()
+    return [a[card_set-1].get_attribute('innerHTML'),b[card_set-1].get_attribute('innerHTML')]
+   
 
 main()
-#Test url with Karador, Ghost Chieftain
-#https://www.scrapingbee.com/blog/pyppeteer/
+
+
