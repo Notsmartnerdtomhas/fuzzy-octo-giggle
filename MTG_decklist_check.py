@@ -95,7 +95,7 @@ def setUp(url):
         card_price = price.get_attribute('innerHTML')
         #print(card_price)
         
-    card_set = int(input('Enter number next to the correct set'))
+    card_set = int(input('Enter number next to the correct set or click enter if card is not found'))
     print(b[card_set-1].get_attribute('innerHTML'))
     
     
