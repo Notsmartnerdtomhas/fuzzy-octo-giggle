@@ -43,6 +43,7 @@ def main():
         NextCard = input("What is the magic Card or enter 'quit' to stop?")
         if NextCard == 'quit':
             break
+        
         url = urlFront
         NextCardSplit = NextCard.split()
         for section in NextCardSplit:
@@ -53,8 +54,12 @@ def main():
         
         time.sleep(1/10) #<-- 1/10 of a second delay
         #print(url)
-        info = setUp(url) #<--- cap sensitive
-
+        try:
+            info = setUp(url) #<--- cap sensitive
+        except:
+            print("card not found")
+            continue
+                    
         file = open(cardNameSplit[0].replace(",","")+".csv",'a',newline = "")
         writer = csv.writer(file)
         writer.writerow([NextCard,info[0],info[1]])
@@ -80,18 +85,17 @@ def setUp(url):
     #print(a)
 
     number = 0
-    for subtitle in a:
+    for subtitle in a: 
         magic_set = subtitle.get_attribute('innerHTML')
         number +=1
         print(number, magic_set)
-
-    
+        
     b = browser.find_elements_by_css_selector('span.search-result__market-price--value')
     for price in b:
         card_price = price.get_attribute('innerHTML')
         #print(card_price)
         
-    card_set = int(input('Enter card set from listed options/ associated number'))
+    card_set = int(input('Enter number next to the correct set'))
     print(b[card_set-1].get_attribute('innerHTML'))
     
     
