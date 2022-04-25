@@ -16,8 +16,6 @@ def main():
     Sum_cost = 0
     cardName = input("What is the magic Card?")
 
-    #cardSet = input("What is the magic Card set?")
-    #foil = input("Foil?")
     urlFront = "https://www.tcgplayer.com/search/magic/product?q="
     urlEnd = "&view=grid"
     url = urlFront
@@ -55,7 +53,7 @@ def main():
         time.sleep(1/10) #<-- 1/10 of a second delay
         #print(url)
         try:
-            info = setUp(url) #<--- cap sensitive
+            info = setUp(url) 
         except:
             print("card not found")
             continue
@@ -75,14 +73,11 @@ def main():
 
 def setUp(url):
     
-    #time.sleep(1/10) #<-- 1/10 of a second delay
-    #print(url)
     browser.get(url)
     time.sleep(2)
-    #a = browser.find_element(By.CLASS_NAME, 'search-results')
+   
     a = browser.find_elements_by_css_selector('span.search-result__subtitle')
-    #print(a.find_element_by_xpath(".//*").get_attribute('innerHTML'))
-    #print(a)
+    
 
     number = 0
     for subtitle in a: 
